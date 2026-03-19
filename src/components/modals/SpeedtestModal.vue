@@ -42,41 +42,56 @@
       </div>
       <div class="speedtest-chart">
         <div class="speedometer">
-          <svg viewBox="0 0 320 190" aria-label="Velocímetro de velocidad">
+          <svg viewBox="0 0 320 180" aria-label="Velocímetro de velocidad">
+            <defs>
+              <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color: #8b6eff; stop-opacity: 1" />
+                <stop offset="50%" style="stop-color: #6da9ff; stop-opacity: 1" />
+                <stop offset="100%" style="stop-color: #8b6eff; stop-opacity: 1" />
+              </linearGradient>
+            </defs>
+            <!-- Track exterior -->
             <path class="speedometer-track" d="M30 160 A130 130 0 0 1 290 160"></path>
+            <!-- Accent interior -->
             <path class="speedometer-accent" d="M48 160 A112 112 0 0 1 272 160"></path>
+
+            <!-- 
+              Tick marks y Labels manuales para precisión total
+              Centro del arco: (160, 160)
+            -->
+            <!-- Tick marks en el arco (radio 112) -->
+            <line x1="48" y1="160" x2="60" y2="160" stroke="rgba(156,182,221,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="80.8" y1="80.8" x2="89.2" y2="89.2" stroke="rgba(156,182,221,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="160" y1="48" x2="160" y2="60" stroke="rgba(156,182,221,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="239.2" y1="80.8" x2="230.8" y2="89.2" stroke="rgba(156,182,221,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="272" y1="160" x2="260" y2="160" stroke="rgba(156,182,221,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+
+            <!-- Labels (radio 95 del centro 160,160) -->
+            <text x="65"  y="164" text-anchor="middle" font-size="10" fill="#9cb6dd" font-weight="600">0</text>
+            <text x="93"  y="97"  text-anchor="middle" font-size="10" fill="#9cb6dd" font-weight="600">25</text>
+            <text x="160" y="62"  text-anchor="middle" font-size="10" fill="#9cb6dd" font-weight="600">50</text>
+            <text x="227" y="97"  text-anchor="middle" font-size="10" fill="#9cb6dd" font-weight="600">75</text>
+            <text x="255" y="164" text-anchor="middle" font-size="10" fill="#9cb6dd" font-weight="600">100</text>
           </svg>
-          <div class="speedometer-needle" id="speedtest-needle" :style="{ transform: `translate(-50%, 0) rotate(${speedtestNeedleAngle}deg)` }"></div>
+
+          <div
+            class="speedometer-needle"
+            id="speedtest-needle"
+            :style="{ transform: `translate(-50%, 0) rotate(${speedtestNeedleAngle}deg)` }"
+          ></div>
           <div class="speedometer-center"></div>
-          <div class="speedometer-scale" aria-hidden="true">
-            <span style="left: 9%; top: 83%">0</span>
-            <span style="left: 28%; top: 57%">25</span>
-            <span style="left: 50%; top: 49%">50</span>
-            <span style="left: 72%; top: 57%">75</span>
-            <span style="left: 91%; top: 83%">100+</span>
-          </div>
         </div>
+
         <div class="speedometer-value" id="speedometer-value">
           {{ speedtestCurrentSpeed }}<span>Mbps</span>
         </div>
-        <div class="speedtest-sub" id="speedtest-time">{{ speedtestTime }}</div>
-      </div>
-      <div class="speedtest-actions">
-        <button
-          class="speedtest-btn primary"
-          type="button"
-          id="run-speedtest"
-          @click="runTest"
-        >
-          {{ buttonText }}
-        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useModals } from "../../composables/useModals";
 import { useSpeedtest } from "../../services/speedtest";
 
@@ -90,6 +105,7 @@ const {
   runSpeedtest,
   speedtestNeedleAngle,
   speedtestCurrentSpeed,
+  speedtestIsRunning,
 } = useSpeedtest();
 
 const isOpen = computed(() => activeModalId.value === "speedtest");
@@ -98,14 +114,11 @@ const close = () => {
   closeModal();
 };
 
-const runTest = async () => {
-  await runSpeedtest();
-};
-
-const buttonText = computed(() =>
-  speedtestTime.value.startsWith("Status: iniciando")
-    ? "Probando..."
-    : "Ejecutar prueba",
-);
+/* Auto-start test when modal opens */
+watch(isOpen, (opened) => {
+  if (opened) {
+    runSpeedtest();
+  }
+});
 
 </script>

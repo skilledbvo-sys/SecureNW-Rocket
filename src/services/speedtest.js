@@ -5,15 +5,16 @@ const speedtestUpload = ref("0 Mbps");
 const speedtestPing = ref("-- ms");
 const speedtestJitter = ref("-- ms");
 const speedtestTime = ref("Estado: listo");
-const speedtestNeedleAngle = ref(-120);
+const speedtestNeedleAngle = ref(-90);
 const speedtestCurrentSpeed = ref("0.0");
+const speedtestIsRunning = ref(false);
 
 const SPEEDOMETER_VISUAL_LIMIT = 100;
 
 const setSpeedometer = (mbps) => {
   const safeSpeed = Number.isFinite(mbps) ? Math.max(0, mbps) : 0;
   const clamped = Math.min(SPEEDOMETER_VISUAL_LIMIT, safeSpeed);
-  const angle = -120 + (clamped / SPEEDOMETER_VISUAL_LIMIT) * 240;
+  const angle = -90 + (clamped / SPEEDOMETER_VISUAL_LIMIT) * 180;
   speedtestNeedleAngle.value = angle;
   speedtestCurrentSpeed.value = safeSpeed.toFixed(1);
 };
@@ -57,7 +58,7 @@ const measurePing = async () => {
 
 const measureDownload = async () => {
   const response = await fetch(
-    `${speedtestEndpoints.download}?bytes=45000000&r=${Date.now()}`,
+    `${speedtestEndpoints.download}?bytes=200000000&r=${Date.now()}`,
     {
       cache: "no-store",
       mode: "cors",
@@ -78,7 +79,9 @@ const measureDownload = async () => {
     }
     totalBytes += value.byteLength;
     const elapsed = Math.max(0.001, (performance.now() - start) / 1000);
-    setSpeedometer((totalBytes * 8) / elapsed / 1000000);
+    const mbps = (totalBytes * 8) / elapsed / 1000000;
+    setSpeedometer(mbps);
+    speedtestDownload.value = `${Math.round(mbps)} Mbps`;
   }
   reader.releaseLock();
   if (!completed) {
@@ -92,7 +95,7 @@ const measureUpload = async () => {
   const payload = new Blob([new Uint8Array(2_500_000)], {
     type: "application/octet-stream",
   });
-  const minDurationMs = 4200;
+  const minDurationMs = 12000;
   setSpeedometer(0);
   for (const endpoint of speedtestUploadFallbacks) {
     try {
@@ -107,7 +110,9 @@ const measureUpload = async () => {
         });
         uploadedBytes += payload.size;
         const elapsed = Math.max(0.001, (performance.now() - start) / 1000);
-        setSpeedometer((uploadedBytes * 8) / elapsed / 1000000);
+        const mbps = (uploadedBytes * 8) / elapsed / 1000000;
+        setSpeedometer(mbps);
+        speedtestUpload.value = `${Math.round(mbps)} Mbps`;
         await sleep(140);
       }
       const elapsed = Math.max(0.001, (performance.now() - start) / 1000);
@@ -120,6 +125,9 @@ const measureUpload = async () => {
 };
 
 export const runSpeedtest = async () => {
+  if (speedtestIsRunning.value) return;
+  speedtestIsRunning.value = true;
+
   speedtestDownload.value = "0 Mbps";
   speedtestUpload.value = "0 Mbps";
   speedtestPing.value = "-- ms";
@@ -153,7 +161,6 @@ export const runSpeedtest = async () => {
         "Estado: subida estimada por limitación del navegador";
     }
     speedtestUpload.value = `${Math.round(uploadMbps)} Mbps`;
-    setSpeedometer(Math.max(downloadMbps, uploadMbps));
 
     if (speedtestTime.value.startsWith("Estado: subida estimada")) {
       speedtestTime.value = `${speedtestTime.value} • concluido`;
@@ -162,6 +169,11 @@ export const runSpeedtest = async () => {
     }
   } catch (error) {
     speedtestTime.value = "Estado: servicio no disponible en este momento";
+  } finally {
+    /* Resetear el velocímetro a 0 suavemente al finalizar */
+    setSpeedometer(0);
+    await sleep(400);
+    speedtestIsRunning.value = false;
   }
 };
 
@@ -174,4 +186,5 @@ export const useSpeedtest = () => ({
   runSpeedtest,
   speedtestNeedleAngle,
   speedtestCurrentSpeed,
+  speedtestIsRunning,
 });

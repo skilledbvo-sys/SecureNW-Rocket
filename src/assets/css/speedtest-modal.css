@@ -1,0 +1,166 @@
+/* ── Speedtest Modal Container ── */
+.speedtest-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-width: none;
+  max-height: 85vh;
+  z-index: 101;
+  transform: translateY(100%) scale(0.97);
+  opacity: 0;
+  transition:
+    transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.35s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.speedtest-modal.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* ── Speedtest Sheet ── */
+.speedtest-sheet {
+  width: 100%;
+  max-width: 100%;
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
+  border-radius: 22px 22px 0 0;
+  padding: 16px 14px calc(12px + var(--navigation-offset));
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.speedtest-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.speedtest-head h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* ── Speedtest Grid ── */
+.speedtest-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.speedtest-item {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 8px 9px;
+}
+
+.speedtest-item .label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.speedtest-item .value {
+  margin-top: 4px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #e8ecff;
+}
+
+/* ── Speedtest Chart/Speedometer ── */
+.speedtest-chart {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(39, 39, 42, 0.62);
+  padding: 10px 10px 6px;
+  margin-bottom: 10px;
+}
+
+.speedometer {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.speedometer svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible; /* importante para que los labels no se corten */
+}
+
+.speedometer-track {
+  fill: none;
+  stroke: rgba(139, 110, 255, 0.18);
+  stroke-width: 14;
+  stroke-linecap: round;
+}
+
+.speedometer-accent {
+  fill: none;
+  stroke: url(#accentGradient);
+  stroke-width: 5;
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+
+.speedometer-needle {
+  position: absolute;
+  left: 50%;
+  /* El viewBox es 320x180, centro Y en 160 → 160/180 = 88.9% desde arriba */
+  bottom: 11.1%;
+  width: 2px;
+  height: 82px;
+  background: linear-gradient(180deg, #ffffff 0%, #8b6eff 100%);
+  border-radius: 999px;
+  transform-origin: 50% 100%;
+  transform: translate(-50%, 0) rotate(-90deg);
+  transition: transform 200ms cubic-bezier(0.34, 1.2, 0.64, 1);
+  box-shadow: 0 0 8px rgba(139, 110, 255, 0.5);
+}
+
+.speedometer-center {
+  position: absolute;
+  left: 50%;
+  bottom: 11.1%;
+  transform: translate(-50%, 50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 0 0 5px rgba(139, 110, 255, 0.28), 0 0 12px rgba(139,110,255,0.3);
+}
+
+.speedometer-value span {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 5px;
+}
+
+.speedtest-head h3 {
+  margin: 0;
+  font-size: 15px;
+  text-transform: capitalize;
+  transition: all 0.3s ease;
+}
+
+.speedometer-value {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: #e8ecff;
+}
