@@ -1,0 +1,37 @@
+import { ref } from "vue";
+
+const activeModalId = ref(null);
+const onOpenCallbacks = new Map();
+
+export const useModals = () => {
+  const isOpen = (id) => activeModalId.value === id;
+
+  const openModal = (id, onOpen) => {
+    if (activeModalId.value === id) {
+      if (onOpen) {
+        onOpen();
+      }
+      return;
+    }
+    activeModalId.value = id;
+    if (onOpen) {
+      onOpenCallbacks.set(id, onOpen);
+      onOpen();
+    }
+  };
+
+  const closeModal = () => {
+    if (!activeModalId.value) return;
+    activeModalId.value = null;
+  };
+
+  const getActiveModalId = () => activeModalId.value;
+
+  return {
+    activeModalId,
+    isOpen,
+    openModal,
+    closeModal,
+    getActiveModalId,
+  };
+};
