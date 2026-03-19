@@ -11,6 +11,8 @@
       aria-modal="true"
       aria-label="Error de autenticación"
     >
+      <div class="modal-glow-border"></div>
+      <div class="modal-drag-handle"></div>
       <div class="auto-result-icon error" aria-hidden="true">
         <svg viewBox="0 0 24 24">
           <path d="M12 8v5" />

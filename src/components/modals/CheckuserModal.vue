@@ -11,8 +11,13 @@
       aria-modal="true"
       aria-label="Datos del usuario"
     >
+      <div class="modal-glow-border"></div>
+      <div class="modal-drag-handle"></div>
       <div class="checkuser-head">
-        <h3>Datos del usuario</h3>
+        <div style="display:flex;align-items:center">
+          <span class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          <h3>Datos del usuario</h3>
+        </div>
         <button class="close-modal-btn" type="button" @click="close">
           Cerrar
         </button>

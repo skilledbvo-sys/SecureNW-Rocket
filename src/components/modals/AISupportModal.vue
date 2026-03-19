@@ -11,6 +11,8 @@
       aria-modal="true"
       aria-label="Soporte"
     >
+      <div class="modal-glow-border"></div>
+      <div class="modal-drag-handle"></div>
       <div class="support-head">
         <div class="support-head-info">
           <h3>Soporte Técnico</h3>

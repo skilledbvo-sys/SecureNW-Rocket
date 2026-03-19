@@ -11,8 +11,13 @@
       aria-modal="true"
       aria-label="Hotspot"
     >
+      <div class="modal-glow-border"></div>
+      <div class="modal-drag-handle"></div>
       <div class="hotspot-head">
-        <h3>Hotspot</h3>
+        <div style="display:flex;align-items:center">
+          <span class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></span>
+          <h3>Hotspot</h3>
+        </div>
         <button class="close-modal-btn" type="button" @click="close">
           Cerrar
         </button>

@@ -1,13 +1,16 @@
+/* ── Overlay with Glassmorphism ── */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.68);
+  background: rgba(0, 0, 0, 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   z-index: 100;
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 0.3s,
-    visibility 0.3s;
+    opacity 0.35s ease,
+    visibility 0.35s ease;
 }
 
 .modal-overlay.active {
@@ -15,6 +18,7 @@
   visibility: visible;
 }
 
+/* ── Modal Containers (shared) ── */
 .server-modal,
 .auto-connect-modal,
 .auto-auth-error-modal,
@@ -28,19 +32,22 @@
 .support-modal {
   position: fixed;
   bottom: 0;
-  left: 50%;
+  left: 0;
   width: 100%;
-  max-width: 420px;
+  max-width: none;
   max-height: 85vh;
   z-index: 101;
-  transform: translateX(-50%) translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  transform: translateY(100%) scale(0.97);
+  opacity: 0;
+  transition:
+    transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.35s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   visibility: hidden;
   pointer-events: none;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
 .server-modal.open,
@@ -54,19 +61,111 @@
 .confirm-modal.open,
 .speedtest-modal.open,
 .support-modal.open {
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0) scale(1);
+  opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+/* ── Drag Handle (pill) ── */
+.modal-drag-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  margin: 8px auto 4px;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.modal-drag-handle:active {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* ── Gradient Glow Border (replaces static border-top) ── */
+.modal-glow-border {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(139, 110, 255, 0.5) 25%,
+    rgba(109, 169, 255, 0.6) 50%,
+    rgba(139, 110, 255, 0.5) 75%,
+    transparent 100%
+  );
+  flex-shrink: 0;
+}
+
+/* ── Luminous Separator ── */
+.modal-separator {
+  height: 1px;
+  margin: 10px 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(139, 110, 255, 0.28) 40%,
+    rgba(139, 110, 255, 0.28) 60%,
+    transparent 100%
+  );
+}
+
+/* ── Glowing Card ── */
+.glow-card {
+  position: relative;
+  border: 1px solid rgba(139, 110, 255, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glow-card:active {
+  border-color: rgba(139, 110, 255, 0.4);
+  box-shadow: 0 0 16px rgba(139, 110, 255, 0.12);
+}
+
+/* ── Header Icon Glow ── */
+.modal-header-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(139, 110, 255, 0.12);
+  box-shadow: 0 0 14px rgba(139, 110, 255, 0.18);
+  color: #a28eff;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+
+.modal-header-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── State Pulse ── */
+@keyframes state-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(40, 209, 124, 0.35); }
+  70% { box-shadow: 0 0 0 8px rgba(40, 209, 124, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(40, 209, 124, 0); }
+}
+
+.dot {
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .speedtest-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.22);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .speedtest-head {
@@ -84,11 +183,10 @@
 .logs-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.22);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .logs-head {
@@ -141,11 +239,10 @@
 .credentials-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.22);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .credentials-head {
@@ -222,11 +319,10 @@
 .extras-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.22);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .extras-head {
@@ -307,11 +403,10 @@
 .hotspot-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.22);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .hotspot-head {
@@ -412,11 +507,10 @@
 .confirm-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.22);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .confirm-text {
@@ -451,11 +545,10 @@
 .checkuser-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.22);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .checkuser-head {
@@ -764,11 +857,10 @@
 .server-modal-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.20);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .server-modal-top {
@@ -1040,11 +1132,10 @@
 .auto-connect-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.20);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .auto-connect-head h3 {
@@ -1056,7 +1147,7 @@
 .auto-connect-loading {
   display: grid;
   gap: 10px;
-  border: 1px solid rgba(139, 110, 255, 0.22);
+  border-top: 1px solid rgba(139, 110, 255, 0.22);
   background: rgba(91, 63, 214, 0.08);
   border-radius: 12px;
   padding: 12px;
@@ -1147,11 +1238,10 @@
 .auto-result-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.20);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 16px 14px calc(12px + var(--navigation-offset));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
   text-align: center;
 }
 
@@ -1216,11 +1306,10 @@
 .support-sheet {
   width: 100%;
   max-width: 100%;
-  background: linear-gradient(180deg, #18181b, #09090b 65%);
-  border: 1px solid rgba(139, 110, 255, 0.22);
+  background: linear-gradient(180deg, #1a1a1f 0%, #0d0d10 70%);
   border-radius: 22px 22px 0 0;
   padding: 0;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   overflow: hidden;

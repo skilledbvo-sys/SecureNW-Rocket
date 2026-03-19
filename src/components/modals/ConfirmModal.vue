@@ -11,8 +11,13 @@
       aria-modal="true"
       aria-label="Confirmar limpieza"
     >
+      <div class="modal-glow-border"></div>
+      <div class="modal-drag-handle"></div>
       <div class="extras-head">
-        <h3>Limpiar aplicación</h3>
+        <div style="display:flex;align-items:center">
+          <span class="modal-header-icon" style="background:rgba(255,94,125,0.12);box-shadow:0 0 14px rgba(255,94,125,0.18);color:#ff7c98"><svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+          <h3>Limpiar aplicación</h3>
+        </div>
         <button class="close-modal-btn" type="button" @click="close">
           Cerrar
         </button>

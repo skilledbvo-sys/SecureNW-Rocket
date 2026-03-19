@@ -11,8 +11,13 @@
       aria-modal="true"
       aria-label="Speedtest"
     >
+      <div class="modal-glow-border"></div>
+      <div class="modal-drag-handle"></div>
       <div class="speedtest-head">
-        <h3>Speedtest</h3>
+        <div style="display:flex;align-items:center">
+          <span class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+          <h3>Speedtest</h3>
+        </div>
         <button class="close-modal-btn" type="button" @click="close">
           Cerrar
         </button>

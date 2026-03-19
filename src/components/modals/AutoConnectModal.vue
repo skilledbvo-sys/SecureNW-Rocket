@@ -11,6 +11,8 @@
       aria-modal="true"
       aria-label="Conexión automática"
     >
+      <div class="modal-glow-border"></div>
+      <div class="modal-drag-handle"></div>
       <div class="auto-connect-head">
         <h3>Conexión automática</h3>
       </div>

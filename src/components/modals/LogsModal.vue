@@ -6,8 +6,13 @@
     :aria-hidden="(!isOpen).toString()"
   >
     <div class="logs-sheet" role="dialog" aria-modal="true" aria-label="Logs">
+      <div class="modal-glow-border"></div>
+      <div class="modal-drag-handle"></div>
       <div class="logs-head">
-        <h3>Logs</h3>
+        <div style="display:flex;align-items:center">
+          <span class="modal-header-icon"><svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
+          <h3>Logs</h3>
+        </div>
         <div class="logs-actions">
           <button class="close-modal-btn" type="button" @click="handleClear">
             Limpiar
